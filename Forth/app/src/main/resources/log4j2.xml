@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!-- File Appender (Logs are written to logs/app.log) -->
+        <File name="FileLogger" fileName="logs/app.log" append="false">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5level %c{1} - %msg%n"/>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <!-- Root logger writes to both console and file -->
+        <Root level="trace">
+            <AppenderRef ref="FileLogger"/>
+        </Root>
+    </Loggers>
+</Configuration>

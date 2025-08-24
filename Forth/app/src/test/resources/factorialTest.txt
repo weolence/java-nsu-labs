@@ -1,0 +1,2 @@
+: 5fac 6 1 do i loop ; 5 1 do * loop ;
+5fac
