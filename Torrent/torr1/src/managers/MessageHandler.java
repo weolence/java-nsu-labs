@@ -31,7 +31,7 @@ public class MessageHandler implements Runnable {
     private boolean running = true;
 
     /**
-     * Creates example of message handler, which, after
+     * Creates instance of message handler, which, after
      * instantiation, is fully ready for using as a runnable thread.
      */
     public MessageHandler(TorrentFileManager torrentFile, FileManager file, MessageSender messageSender, Client client, Server server) {

@@ -1,6 +1,7 @@
 package managers;
 
 import exceptions.IllegalMessageTypeException;
+import exceptions.NullSessionException;
 import messages.*;
 import messages.KeepAlive;
 import network.Client;
@@ -8,6 +9,7 @@ import network.ClientSession;
 import types.Envelope;
 import types.MessageType;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,7 +27,7 @@ public class MessageSender implements Runnable {
     private boolean running = true;
 
     /**
-     * Creates example of MessageSender, after end of
+     * Creates instance of MessageSender, after end of
      * the construction & creation of run() thread class is 
      * fully ready for sending messages with send() method.
      * @param client is a provider of sessions needed for sending
@@ -53,9 +55,12 @@ public class MessageSender implements Runnable {
             
             try {
                 client.getSession(recipientId).write(message);
-            } catch (Exception e) {
-                System.out.println(e.getStackTrace());
+            } catch (IOException e) {
+                System.out.println("unable to write message");
+            } catch (NullSessionException e) {
+                System.out.println(e.getMessage());
             }
+            
         }
     }
 

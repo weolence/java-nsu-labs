@@ -98,7 +98,7 @@ public class Server implements Runnable {
                         try {
                             session.readSessionProtocol();
                         } catch (Exception e) {
-                            System.out.println(e.getMessage());
+                            System.out.println("unable to read session protocol");
                             sessions.remove(session);
                             key.cancel();
                             continue;
@@ -109,7 +109,7 @@ public class Server implements Runnable {
                     try {
                         message = session.read();
                     } catch (Exception e) {
-                        System.out.println(e.getMessage());
+                        System.out.println("unable to read message");
                         sessions.remove(session);
                         key.cancel();
                         continue;

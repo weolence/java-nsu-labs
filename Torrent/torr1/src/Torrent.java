@@ -96,7 +96,7 @@ public class Torrent {
             try {
                 messageSender.send(new Envelope(new NotInterested(), session.getPeerId()));
             } catch (IllegalMessageTypeException e) {
-                e.getMessage();
+                System.out.println(e.getMessage());
             }
         }
 

@@ -9,19 +9,41 @@ import java.nio.channels.SocketChannel;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 
+/**
+ * Represents connection to peer which allows receiving and
+ * sending messages. This class hides low-level reading/writing
+ * to socket channels.
+ */
 public class Peer {
     private final SocketChannel channel;
     private final ReadState msgLenState = new ReadState(Message.length);
     private final ReadState msgState = new ReadState(0);
 
+    /**
+     * Creates example of peer over given channel.
+     * @param channel is channel which will be used for reading/writing
+     */
     public Peer(SocketChannel channel) {
         this.channel = channel;
     }
 
+    /**
+     * Checks if channel fully connected & ready for reading/writing.
+     * That method cannot signalize loss of connection, it only
+     * says is channel given & is channel initialized correctly.
+     * @return boolean value of described atributes
+     */
     public boolean isConnected() { 
         return channel != null && channel.isConnected();
     }
 
+    /**
+     * Writes given message to peer's channel. Writing happens
+     * in blocking mode because there are no reasons for stopping
+     * writing without it's finishing.
+     * @param message is message for writing
+     * @throws IOException in case loss of connection or troubles with writing
+     */
     public void write(Message message) throws IOException {
         ByteBuffer buffer = message.toBytes();
         while(buffer.hasRemaining())
@@ -29,6 +51,13 @@ public class Peer {
                 throw new ClosedChannelException();
     }
 
+    /**
+     * Reads handshake in non-blocking mode from given channel. Method required for
+     * reading different structure of message. Handshake built different from other
+     * supportable types of messages.
+     * @return handshake message or null in case handhsake wasn't read yet
+     * @throws IOException in case of connection loss or any other troubles with reading
+     */
     public Handshake readHandshake() throws IOException {
         if(!msgLenState.isStarted()) msgLenState.reset(Handshake.getProtocolSpaceLength());
 
@@ -64,6 +93,12 @@ public class Peer {
         return new Handshake(protocolBytes, infoHash, peerId);
     }
 
+    /**
+     * Reads message in non-blocking mode.
+     * @return message or null in case message wasn't read yet
+     * @throws IOException in case of connection loss or any other troubles with reading
+     * @throws IllegalMessageTypeException in case of facing unsupported type of message
+     */
     public Message read() throws IOException, IllegalMessageTypeException {
         if(!msgLenState.isStarted()) msgLenState.reset(Message.length);
 
@@ -86,6 +121,12 @@ public class Peer {
         return interpretateMessage(buffer);
     }
 
+    /**
+     * Interpretates message by read type and istantiates required message class for returning.
+     * @param buffer is data read from channel
+     * @return constructed message
+     * @throws IllegalMessageTypeException in case of facing unsupported type of message
+     */
     private Message interpretateMessage(ByteBuffer buffer) throws IllegalMessageTypeException {
         int dataLen = buffer.capacity();
         MessageType type = MessageType.fromId(buffer.get());
@@ -136,6 +177,9 @@ public class Peer {
         return message;
     }
 
+    /**
+     * Class required for non-blocking reading from channel.
+     */
     private class ReadState {
         private ByteBuffer buffer;
         private boolean isCompleted = false;

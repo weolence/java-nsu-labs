@@ -15,7 +15,7 @@ public class FileManager {
     private boolean[] bitmap;
 
     /**
-     * Creates example of file manager.
+     * Creates instance of file manager.
      * @param torrentFile is representation of .torrent file, 
      * which can provide class with required meta-data.
      * @throws IOException in case of troubles with bitmap generation
